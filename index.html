@@ -9,55 +9,103 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Dancing+Script:wght@700&display=swap');
 
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: white; overflow-x: hidden; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #0f172a; 
+            color: white; 
+            overflow-x: hidden;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* Animated Mesh Background */
+        .bg-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            filter: blur(80px);
+        }
+
         .cursive { font-family: 'Dancing Script', cursive; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
         
-        /* Card Flip Logic */
-        .card-inner { transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
+        /* Floating Animation for Header */
+        @keyframes floatHeader {
+            0%, 100% { transform: translateY(0px) rotate(-1deg); text-shadow: 0 0 20px rgba(234,179,8,0.3); }
+            50% { transform: translateY(-20px) rotate(1deg); text-shadow: 0 0 40px rgba(234,179,8,0.6); }
+        }
+        .animate-birthday { animation: floatHeader 5s ease-in-out infinite; }
+
+        /* Card 3D Flip & Hover Logic */
+        .perspective-1000 { perspective: 1000px; }
+        .card-inner { 
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transform-style: preserve-3d; 
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
         .flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { backface-visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .card-front, .card-back { backface-visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 1rem; }
         .card-back { transform: rotateY(180deg); }
+
+        /* "Reveal" Hover Overlay */
+        .reveal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 1rem;
+            z-index: 10;
+        }
+        .hover-card:hover .reveal-overlay { opacity: 1; }
+        .hover-card:hover .card-front { transform: scale(1.02); }
         
         #mainPage, #cardsPage { display: none; opacity: 0; transition: opacity 0.8s ease; }
-        .locked { filter: grayscale(1) brightness(0.5); cursor: not-allowed !important; }
-
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-        .animate-float { animation: float 4s ease-in-out infinite; }
+        .locked { filter: grayscale(1) opacity(0.4); cursor: not-allowed !important; }
     </style>
 </head>
 <body>
 
+    <div class="bg-mesh"></div>
     <canvas id="canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
     <section id="introPage" class="relative z-10 h-screen flex flex-col items-center justify-center p-6 text-center">
-        <div class="animate-float mb-8">
+        <div class="mb-8">
             <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
                 Here's the word that I believe <br>
                 <span class="text-yellow-400 font-black italic">fits you best...</span>
             </h2>
         </div>
-        <button onclick="showMainPage()" class="bg-yellow-500 hover:bg-yellow-400 text-black px-12 py-5 rounded-full font-bold text-xl flex items-center gap-3 transition-transform hover:scale-105">
+        <button onclick="showMainPage()" class="bg-yellow-500 hover:bg-yellow-400 text-black px-12 py-5 rounded-full font-bold text-xl flex items-center gap-3 transition-transform hover:scale-110 active:scale-95 shadow-2xl shadow-yellow-500/20">
             <i data-lucide="heart" class="fill-current"></i>
-            Click Me
+            Reveal
         </button>
     </section>
 
     <section id="mainPage" class="relative z-10 min-h-screen p-6">
-        <div class="max-w-3xl mx-auto text-center mt-20">
-            <h1 class="text-6xl md:text-8xl font-black mb-6 text-yellow-400">HAPPY BIRTHDAY!</h1>
+        <div class="max-w-4xl mx-auto text-center mt-24">
+            <h1 class="text-6xl md:text-9xl font-black mb-8 text-yellow-400 animate-birthday tracking-tighter">HAPPY BIRTHDAY!</h1>
             
-            <div class="glass p-8 md:p-12 rounded-[2.5rem] border-t border-white/20 mb-10">
-                <p id="birthdayMessage" class="text-xl md:text-2xl leading-relaxed text-slate-200">
-                    (Your custom birthday message will go right here, Kanak!)
+            <div class="glass p-10 md:p-16 rounded-[3rem] border-t border-white/20 mb-10 shadow-2xl">
+                <p id="birthdayMessage" class="text-xl md:text-3xl leading-relaxed text-slate-100 font-light">
+                    Today is all about you, Kanak. Here's a journey through every reason why you're incredible.
                 </p>
                 
-                <div class="flex flex-wrap justify-center gap-6 mt-10">
-                    <button onclick="launchFireworks()" class="bg-yellow-500 text-black font-bold py-4 px-10 rounded-full flex items-center gap-2 hover:bg-yellow-400 transition-all">
-                        <i data-lucide="clapperboard"></i> Cheers!
+                <div class="flex flex-wrap justify-center gap-6 mt-12">
+                    <button onclick="launchFireworks()" class="bg-white text-black font-bold py-5 px-12 rounded-full flex items-center gap-3 hover:bg-yellow-400 transition-all transform hover:-translate-y-1">
+                        <i data-lucide="sparkles"></i> Cheers!
                     </button>
-                    <button onclick="showCardsPage()" class="glass border-yellow-500/50 py-4 px-10 rounded-full flex items-center gap-2 hover:bg-white/10 transition-all">
-                        <i data-lucide="layers" class="text-yellow-400"></i> The 20-Day Journey
+                    <button onclick="showCardsPage()" class="glass border-yellow-500/50 py-5 px-12 rounded-full flex items-center gap-3 hover:bg-white/10 transition-all transform hover:-translate-y-1">
+                        <i data-lucide="calendar-heart" class="text-yellow-400"></i> The 20-Day Journey
                     </button>
                 </div>
             </div>
@@ -65,25 +113,28 @@
     </section>
 
     <section id="cardsPage" class="relative z-10 min-h-screen p-6 pb-20">
-        <button onclick="backToMain()" class="mb-8 flex items-center gap-2 opacity-60 hover:opacity-100 transition-all">
-            <i data-lucide="arrow-left"></i> Back
-        </button>
-        <h2 class="text-4xl font-bold text-center mb-12 cursive text-yellow-400">20 Days of You</h2>
-        
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 max-w-6xl mx-auto" id="cardsGrid">
-            </div>
+        <div class="max-w-6xl mx-auto">
+            <button onclick="backToMain()" class="mb-8 flex items-center gap-2 text-yellow-400/70 hover:text-yellow-400 transition-all font-bold">
+                <i data-lucide="arrow-left"></i> BACK TO CELEBRATION
+            </button>
+            <h2 class="text-5xl font-bold text-center mb-16 cursive text-white">20 Days of You</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8" id="cardsGrid">
+                </div>
+        </div>
     </section>
 
     <script>
         lucide.createIcons();
 
-        // 1. Navigation Logic
         function showMainPage() {
             document.getElementById('introPage').style.display = 'none';
             const page = document.getElementById('mainPage');
             page.style.display = 'block';
             setTimeout(() => page.style.opacity = '1', 50);
-            initStartDate(); // Start the 20-day clock
+            if (!localStorage.getItem('journeyStart')) {
+                localStorage.setItem('journeyStart', new Date().getTime());
+            }
         }
 
         function showCardsPage() {
@@ -99,46 +150,47 @@
             document.getElementById('mainPage').style.display = 'block';
         }
 
-        // 2. The 20-Day Lock Logic
-        function initStartDate() {
-            if (!localStorage.getItem('birthdayJourneyStart')) {
-                localStorage.setItem('birthdayJourneyStart', new Date().getTime());
-            }
-        }
-
-        const cardContent = [
-            { word: "Radiant", note: "Because you light up every room you walk into." },
-            { word: "Day 2 Word", note: "The note for Day 2 goes here..." },
-            // ... I will fill all 20 once you provide the words/notes
+        // --- THE CONTENT ---
+        // REPLACE THESE WITH YOUR 20 WORDS AND NOTES
+        const journeyContent = [
+            { word: "Luminous", note: "Because you brighten every dark corner of my world." },
+            { word: "Brave", note: "The way you tackle every challenge is inspiring." },
+            // ... add the rest here
         ];
 
         function renderCards() {
             const grid = document.getElementById('cardsGrid');
             grid.innerHTML = '';
-            const startTime = parseInt(localStorage.getItem('birthdayJourneyStart'));
+            const startTime = parseInt(localStorage.getItem('journeyStart'));
             const now = new Date().getTime();
 
             for (let i = 0; i < 20; i++) {
-                const daysElapsed = Math.floor((now - startTime) / (1000 * 60 * 60 * 24));
-                const isLocked = i > daysElapsed;
+                const dayInMs = 24 * 60 * 60 * 1000;
+                const unlockTime = startTime + (i * dayInMs);
+                const isLocked = now < unlockTime;
                 
-                // Calculate time remaining for the next card
-                const unlockTime = startTime + (i * 24 * 60 * 60 * 1000);
-                const timeLeft = unlockTime - now;
-                const hoursLeft = Math.ceil(timeLeft / (1000 * 60 * 60));
-
                 const card = document.createElement('div');
-                card.className = `relative h-64 perspective-1000 ${isLocked ? 'locked' : ''}`;
+                card.className = `perspective-1000 h-72 w-full ${isLocked ? 'locked' : 'hover-card cursor-pointer'}`;
                 
+                const timeDiff = unlockTime - now;
+                const daysLeft = Math.ceil(timeDiff / dayInMs);
+
                 card.innerHTML = `
-                    <div class="card-inner w-full h-full glass rounded-2xl ${isLocked ? '' : 'hover-flip'}" onclick="${isLocked ? '' : 'this.classList.toggle(\'flipped\')'}">
-                        <div class="card-front flex flex-col items-center justify-center p-4 text-center">
-                            <span class="text-sm opacity-50 mb-2">Day ${i + 1}</span>
-                            <h3 class="text-xl font-bold text-yellow-400">${isLocked ? '<i data-lucide="lock" class="mx-auto"></i>' : cardContent[i]?.word || 'Word'}</h3>
-                            ${isLocked ? `<p class="text-[10px] mt-2">Unlocks in ${Math.floor(i - (now-startTime)/(86400000))}d ${hoursLeft % 24}h</p>` : ''}
+                    <div class="card-inner ${isLocked ? '' : ''}" onclick="${isLocked ? '' : 'this.classList.toggle(\'flipped\')'}">
+                        <div class="card-front glass flex flex-col items-center justify-center p-6 border border-white/10 shadow-xl">
+                            ${!isLocked ? '<div class="reveal-overlay font-bold text-yellow-400 tracking-widest uppercase text-sm">Reveal</div>' : ''}
+                            <span class="absolute top-4 left-4 text-[10px] uppercase tracking-widest opacity-40">Day ${i + 1}</span>
+                            ${isLocked ? `
+                                <i data-lucide="lock" class="w-8 h-8 opacity-20 mb-3"></i>
+                                <p class="text-[10px] text-yellow-500/50 font-bold uppercase tracking-tighter">Unlocks in ${daysLeft} days</p>
+                            ` : `
+                                <i data-lucide="sparkle" class="w-6 h-6 text-yellow-400 mb-4 animate-pulse"></i>
+                                <span class="text-xs text-slate-400">Day ${i+1} is ready</span>
+                            `}
                         </div>
-                        <div class="card-back glass bg-yellow-500/10 flex items-center justify-center p-6 text-center rounded-2xl">
-                            <p class="text-sm italic">"${cardContent[i]?.note || 'Your note here'}"</p>
+                        <div class="card-back glass bg-yellow-500/20 border border-yellow-500/40 flex flex-col items-center justify-center p-6 text-center">
+                            <h3 class="text-yellow-400 font-bold mb-3 uppercase tracking-widest text-sm">${journeyContent[i]?.word || 'Surprise'}</h3>
+                            <p class="text-xs italic leading-relaxed text-slate-200">"${journeyContent[i]?.note || 'I haven\'t written this note yet!'}"</p>
                         </div>
                     </div>
                 `;
@@ -147,7 +199,7 @@
             lucide.createIcons();
         }
 
-        // 3. Fireworks (Cheers) Logic - [Reusing your engine]
+        // --- FIREWORKS (CHEERS) ---
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -158,7 +210,7 @@
         class Particle {
             constructor(x, y, color) {
                 this.x = x; this.y = y; this.color = color;
-                this.velocity = { x: (Math.random() - 0.5) * 8, y: (Math.random() - 0.5) * 8 };
+                this.velocity = { x: (Math.random() - 0.5) * 12, y: (Math.random() - 0.5) * 12 };
                 this.alpha = 1; this.friction = 0.95;
             }
             draw() {
@@ -174,21 +226,20 @@
         }
 
         function launchFireworks() {
-            const colors = ['#fbbf24', '#f59e0b', '#ffffff', '#a855f7'];
-            for (let j = 0; j < 5; j++) {
+            const colors = ['#fbbf24', '#ffffff', '#6366f1', '#f472b6'];
+            for (let j = 0; j < 8; j++) {
                 setTimeout(() => {
                     const x = Math.random() * canvas.width;
-                    const y = Math.random() * canvas.height * 0.5;
-                    for (let i = 0; i < 40; i++) {
+                    const y = Math.random() * (canvas.height * 0.6);
+                    for (let i = 0; i < 50; i++) {
                         particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
                     }
-                }, j * 200);
+                }, j * 150);
             }
         }
 
         function animate() {
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.2)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach((p, i) => {
                 if (p.alpha > 0) { p.update(); p.draw(); }
                 else { particles.splice(i, 1); }
