@@ -66,7 +66,6 @@
             position: relative;
             width: 100%;
             height: 100%;
-            cursor: pointer;
         }
         .flipped { transform: rotateY(180deg); }
         .card-front, .card-back { backface-visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 1rem; }
@@ -103,6 +102,18 @@
     <div class="language-float float-fast top-[45%] right-[2%] text-xl">जन्मदिनस्य शुभाशयाः</div>
     <div class="language-float float-slow bottom-[25%] left-[2%] text-2xl">سالگرہ مبارک</div>
     <div class="language-float float-med top-[1%] left-[35%] text-xl">Bon Anniversaire</div>
+    <div class="language-float float-fast bottom-[2%] left-[40%] text-lg">Feliz Cumpleaños</div>
+    <div class="language-float float-slow top-[10%] right-[25%] text-xl">お誕生日おめでとう</div>
+    <div class="language-float float-med bottom-[10%] right-[30%] text-lg">생일 축하해요</div>
+    <div class="language-float float-fast top-[85%] left-[12%] text-md">Alles Gute zum Geburtstag</div>
+    <div class="language-float float-slow top-[65%] right-[1%] text-xl">生日快乐</div>
+    <div class="language-float float-med bottom-[40%] right-[4%] text-sm">Gefeliciteerd</div>
+    <div class="language-float float-fast top-[20%] right-[45%] text-lg">Feliz Aniversário</div>
+    <div class="language-float float-slow bottom-[30%] left-[18%] text-md">С днем рождения</div>
+    <div class="language-float float-med top-[75%] right-[12%] text-sm">Grattis पर födelsedagen</div>
+    <div class="language-float float-fast top-[25%] left-[15%] text-lg">Maligayang Bati</div>
+    <div class="language-float float-slow bottom-[20%] right-[40%] text-xl">Heri ya Siku ya Kuzaliwa</div>
+    <div class="language-float float-med top-[55%] left-[4%] text-md">Felix Sit Natalis Dies</div>
 
     <section id="introPage" class="relative z-10 h-screen flex flex-col items-center justify-center p-6 text-center">
         <div class="mb-8">
@@ -124,14 +135,17 @@
             </h1>
             
             <div class="glass w-full p-10 md:py-14 md:px-20 rounded-[3rem] md:rounded-[5rem] border-t border-white/20 mb-10 shadow-2xl">
-                <p class="text-lg md:text-xl leading-relaxed text-slate-100 font-light max-w-5xl mx-auto">
-                    In the era that feels excessively annoying, loud and distracted, your presence has always felt like the gentlemost soothe that I can provide to my conscience...
+                <p id="birthdayMessage" class="text-lg md:text-xl leading-relaxed text-slate-100 font-light max-w-5xl mx-auto">
+                    In the era that feels excessively annoying, loud and distracted, your presence has always felt like the gentlemost soothe that I can provide to my conscience. It has always felt like a calm and amazing clarity. The way you make your parents', your family's, your friends', your well-wishers' and especially my life a much much better place just by BEING in it is self-explanatory for the kind of person you are. Never in hundreds of years will I ever come across such a wonderful soul as yours. One can only wonder and thank god for giving you inn their lives. When I went to the temple this morning, all I prayed for was your health, happiness, success, and all your wishes being granted in the best manner (i wished for another thing but that will remain a secret for a while hehe ;))
                     <br><br>
-                    Thank you so so so much for being born.
+                    Your birthday is now one of THE MOST special days of the year that I will wait for eagerly and impatiently, I know that for sure. So today, it's ALLL ABOUT YOUUU. A very very HAPPY BIRTHDAY, Ms. Kanak Tamrakar, and the heartiest congratulations on havinng lived all these years such gracefully. Oh and last but not the least, Thank you so so so much for being born.
+                    <br><br>
+                    As for this "perfect word" business, you know, I did not expect a small question like "What word would you use to describe me!?" become such a key-player in my inspiration for your birthday wish🙈 Yes, I did think of a word for you then, but being the impossible task that it was, i kept thinking how INADEQUATE it was to describe you in the least.
+                    So, I came up with an even better idea. For the next "20" days, You will find a word for describing you on this very site. I know it still won't be enough, but atleast it would so much better be than ONE measley word xD
                 </p>
 
                 <div class="flex flex-wrap justify-center gap-6 mt-12">
-                    <button onclick="launchFireworks()" class="bg-white text-black font-bold py-5 px-12 rounded-full flex items-center gap-3 hover:bg-yellow-400 transition-all transform hover:-translate-y-1">
+                    <button onclick="launchFireworks()" class="bg-white text-black font-bold py-5 px-12 rounded-full flex items-center gap-3 hover:bg-yellow-400 transition-all transform hover:-translate-y-1 shadow-lg shadow-white/5">
                         <i data-lucide="sparkles"></i> Cheers to YOUUU
                     </button>
                     <button onclick="showCardsPage()" class="glass border-yellow-500/50 py-5 px-12 rounded-full flex items-center gap-3 hover:bg-white/10 transition-all transform hover:-translate-y-1">
@@ -161,7 +175,7 @@
             page.style.display = 'block';
             setTimeout(() => page.style.opacity = '1', 50);
             if (!localStorage.getItem('journeyStart')) {
-                // REDUCED BY 24 HOURS (Requirement 4)
+                // REDUCED BY 24 HOURS (Requirements)
                 const yesterday = new Date().getTime() - (24 * 60 * 60 * 1000);
                 localStorage.setItem('journeyStart', yesterday);
             }
@@ -180,9 +194,10 @@
             document.getElementById('mainPage').style.display = 'block';
         }
 
+        // CONTENT RESTORED
         const journeyContent = [
-            { word: "Resplendent", note: "Most people think of 'shining' as something passive... But your light is different—it’s active." },
-            { word: "Ethereal", note: "there is a quality to you that feels untouched by the 'heaviness' of the world." },
+            { word: "Resplendent", note: "Most people think of 'shining' as something passive, like a reflection. But your light is different—it’s active. It comes from the intentional way you live, the way you do everything with such grace & passion, and the relentless way you pursue a better version of yourself every single day." },
+            { word: "Ethereal", note: "there is a quality to you that feels untouched by the 'heaviness' of the world. Even though you are so focused and grounded in your goals, you carry this grace that feels almost otherworldly." },
         ];
 
         function renderCards() {
@@ -194,7 +209,7 @@
                 const dayInMs = 24 * 60 * 60 * 1000;
                 let unlockTime = startTime + (i * dayInMs);
                 
-                // DAY 2 REVEAL
+                // DAY 2 REVEAL logic
                 if (i === 1) unlockTime = startTime;
 
                 const cardWrapper = document.createElement('div');
@@ -211,8 +226,12 @@
                     const m = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
                     const s = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
+                    // FIXED: Dynamic innerHTML structure that doesn't wipe state
+                    const existingInner = cardWrapper.querySelector('.card-inner');
+                    const isFlipped = existingInner ? existingInner.classList.contains('flipped') : false;
+
                     const content = isLocked ? `
-                        <div class="card-front glass flex flex-col items-center justify-center p-6 border border-white/10 shadow-xl locked">
+                        <div class="card-front glass flex flex-col items-center justify-center p-6 border border-white/10 shadow-xl locked h-full">
                             <i data-lucide="lock" class="w-8 h-8 opacity-20 mb-3"></i>
                             <p class="text-[10px] text-yellow-500/70 font-bold uppercase">Unlocks In:</p>
                             <div class="text-yellow-400 font-mono text-[11px] mt-2 bg-black/30 px-2 py-1 rounded">
@@ -220,7 +239,7 @@
                             </div>
                         </div>
                     ` : `
-                        <div class="card-inner hover-card" onclick="this.classList.toggle('flipped')">
+                        <div class="card-inner hover-card h-full ${isFlipped ? 'flipped' : ''}" onclick="this.classList.toggle('flipped')">
                             <div class="card-front glass flex flex-col items-center justify-center p-6 border border-white/10 shadow-xl relative">
                                 <div class="reveal-overlay font-bold text-yellow-400 tracking-widest uppercase text-xs">Click to Reveal</div>
                                 <span class="absolute top-4 left-4 text-[10px] uppercase tracking-widest opacity-40">Day ${i + 1}</span>
@@ -245,7 +264,6 @@
             }
         }
 
-        // FIREWORKS CODE (Exact same as yours)
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
